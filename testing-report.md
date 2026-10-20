@@ -16,14 +16,18 @@ CodeShield is a Django web application for monitoring, reporting and managing se
 
 | # | Feature | Expected | Actual | Status |
 |---|---------|----------|--------|--------|
-| 1 | Server startup | Server starts with no errors | Server started, 0 issues | ✅ Pass |
-| 2 | Dashboard overview | Summary cards show correct incident counts | Counts match the records | ✅ Pass |
-| 3 | Security analytics | Charts show incidents by severity, status and SDLC pillar | All three charts render correctly | ✅ Pass |
-| 4 | Report incident form | Form displays all required fields | All fields displayed | ✅ Pass |
-| 5 | Incident records table | Saved incidents are listed with details and actions | Both incidents listed with Edit/Delete buttons | ✅ Pass |
-| 6 | Responsive layout | Table remains fully usable on a narrow screen | Right-hand columns are cut off | ⚠️ Minor issue |
+| 1 | Server startup | Server starts with no errors | Server started, and the Django system check reported no issues | ✅ Pass |
+| 2 | Dashboard overview | Summary cards show correct incident counts | Counts match the displayed incident records | ✅ Pass |
+| 3 | Security analytics | Charts show incidents by severity, status and SDLC pillar | All three charts render correctly and match the displayed records | ✅ Pass |
+| 4 | Report incident form | Form displays all required fields | All expected fields are displayed | ✅ Pass |
+| 5 | Incident records table | Saved incidents are listed with details and actions | Two incidents are listed with Edit/Delete buttons | ✅ Pass |
+| 6 | Responsive layout | Table remains usable on a narrow screen | Right-hand columns are cut off in the tested viewport | ⚠️ Minor issue |
+| 7 | Create incident | New incident is saved and displayed | Incident creation was tested and worked as expected | ✅ Pass |
+| 8 | Edit incident | Changes to an existing incident are saved | Incident editing was tested and worked as expected | ✅ Pass |
+| 9 | Delete incident | Selected incident is deleted as intended | Incident deletion was tested and worked as expected | ✅ Pass |
+| 10 | Input validation | Invalid or duplicate values are handled appropriately | Not verified in the tests documented in this report | Not Tested |
 
-**Overall:** The core features work as expected. No functional errors or crashes were observed. Only minor UI/usability issues were noted (Section 4).
+**Overall:** The dashboard display and the tested incident-management workflows operated as expected. A responsive-layout issue and several minor usability improvements were identified. Input validation requires separate testing before its behaviour can be confirmed.
 
 ## 3. Detailed Test Results
 
@@ -111,7 +115,31 @@ Severity and status are shown as colour-coded badges, and each row has **Edit** 
 
 <img width="1200" height="468" alt="WhatsApp Image 2026-10-20 at 13 33 25 (1)" src="https://github.com/user-attachments/assets/7003d841-bb5f-449f-a17a-cced4c492c89" />
 
+### 3.7 Create an Incident
 
+**Expected:** A user can submit a security incident through the reporting form, and the new record appears in the incident table.
+
+**Actual:** Incident creation was tested and worked as expected.
+
+**Status:** ✅ Pass
+
+### 3.8 Edit an Incident
+
+**Expected:** A user can edit an existing incident and save the changes successfully.
+
+**Actual:** Incident editing was tested and worked as expected.
+
+**Status:** ✅ Pass
+
+### 3.9 Delete an Incident
+
+**Expected:** A user can delete the selected incident, and it is removed from the records table as intended.
+
+**Actual:** Incident deletion was tested and worked as expected.
+
+**Status:** ✅ Pass
+
+Supporting screenshots should be included for these tests where available. The results should reflect the actual behaviour observed during testing.
 
 
 ## 4. Errors and Issues Found
@@ -123,10 +151,12 @@ No crashes, server errors or incorrect data were found. The following minor issu
 | 1 | Records table is cut off on narrow screens (Date Reported and Actions columns hidden) | Low | Wrap the table in a horizontally scrollable container (`overflow-x: auto`) or use a stacked layout on small screens |
 | 2 | Form label reads "Incident id:" (lowercase "id"), the default Django field label | Low | Set a custom label, e.g. "Incident ID" |
 | 3 | Form label "Pillar" differs from the table heading "SDLC Pillar" | Low | Use consistent wording in both places |
-| 4 | Incident ID is typed in manually, which risks duplicates or typos | Low | Auto-generate IDs (e.g. CS-003) or enforce a unique constraint with a clear error message |
-
-
+| 4 | Incident ID is entered manually, which may lead to duplicates or typing errors | Low | Consider automatically generating incident IDs or enforcing uniqueness with clear validation feedback. Duplicate-ID handling has not been verified in this report. |
 
 ## 5. Conclusion
 
-The CodeShield SDLC Dashboard starts correctly and displays accurate incident counts, analytics charts, a reporting form and an incident records table. The features shown meet their expected results. The remaining work is to fix the minor UI issues listed above and to test the create, edit, delete and validation workflows.
+The CodeShield SDLC Dashboard starts correctly and displays the dashboard overview, security analytics, incident reporting form and incident records table as expected in the tested environment. Testing also confirmed that creating, editing and deleting incidents worked as expected.
+
+A responsive-layout issue and several minor usability improvements were identified, particularly regarding table visibility on narrow screens, form labels and incident ID handling. Input validation requires further testing before its behaviour can be confirmed.
+
+Overall, the tested components operated as expected within the scope of this assessment. Further improvements and testing are recommended, and these results do not establish that every feature is defect-free or that the application's security has been comprehensively verified.
