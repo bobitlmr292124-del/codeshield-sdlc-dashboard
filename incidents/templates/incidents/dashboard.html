@@ -1,0 +1,476 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeShield | Security Dashboard</title>
+
+    <style>
+        :root {
+            --background: #0b1120;
+            --panel: #151f32;
+            --panel-light: #1c2940;
+            --border: #2b3b55;
+            --text: #edf3fc;
+            --muted: #9aabc3;
+            --accent: #38bdf8;
+            --green: #34d399;
+            --yellow: #fbbf24;
+            --red: #fb7185;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: var(--background);
+            color: var(--text);
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.6;
+        }
+
+        header {
+            padding: 22px 5%;
+            background: #111a2b;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .brand { font-size: 25px; font-weight: bold; }
+        .brand span { color: var(--accent); }
+        .header-label { color: var(--muted); font-size: 13px; }
+
+        main {
+            max-width: 1400px;
+            margin: auto;
+            padding: 32px 5%;
+        }
+
+        .welcome { margin-bottom: 28px; }
+        .welcome h1 { margin: 0 0 8px; font-size: 30px; }
+        .welcome p { margin: 0; color: var(--muted); }
+
+        .section-heading { margin: 0 0 16px; font-size: 20px; }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card, .panel, .chart-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .stat-card { padding: 22px; }
+        .stat-card p { margin: 0 0 8px; color: var(--muted); font-size: 14px; }
+        .stat-card h2 { margin: 0; font-size: 32px; }
+
+        .total h2 { color: var(--accent); }
+        .open h2 { color: var(--yellow); }
+        .critical h2 { color: var(--red); }
+        .resolved h2 { color: var(--green); }
+
+        .panel { padding: 24px; margin-bottom: 28px; }
+
+        .panel-description {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: -8px;
+            margin-bottom: 20px;
+        }
+
+        .incident-form p { margin: 0 0 16px; }
+
+        .incident-form label {
+            display: block;
+            margin-bottom: 6px;
+            color: #d8e4f5;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .incident-form input,
+        .incident-form textarea,
+        .incident-form select {
+            width: 100%;
+            padding: 11px 12px;
+            border-radius: 7px;
+            border: 1px solid var(--border);
+            background: #0d1728;
+            color: var(--text);
+            font: inherit;
+        }
+
+        .incident-form textarea { resize: vertical; }
+
+        .incident-form input:focus,
+        .incident-form textarea:focus,
+        .incident-form select:focus {
+            outline: 2px solid var(--accent);
+        }
+
+        .helptext { display: block; color: var(--muted); font-size: 12px; }
+        .errorlist { color: var(--red); }
+
+        .button {
+            display: inline-block;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 7px;
+            font-weight: bold;
+            font-size: 14px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .button-primary { background: var(--accent); color: #071321; }
+        .button-edit { background: #28486b; color: #dbeafe; }
+        .button-delete { background: #512535; color: #fecdd3; }
+
+        .button-primary:hover { background: #7dd3fc; }
+        .button-edit:hover { background: #365d87; }
+        .button-delete:hover { background: #713044; }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .chart-card { min-width: 0; padding: 18px; }
+        .chart-card h3 { margin: 0 0 18px; font-size: 16px; }
+
+        .chart-container {
+            position: relative;
+            height: 260px;
+        }
+
+        .table-wrapper { width: 100%; overflow-x: auto; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        th {
+            color: var(--muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        td { font-size: 14px; }
+        tbody tr:hover { background: var(--panel-light); }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 9px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            background: #29384f;
+            color: #dbeafe;
+        }
+
+        .severity-critical { background: #512535; color: #fecdd3; }
+        .severity-high { background: #553b20; color: #fde68a; }
+        .severity-medium { background: #28486b; color: #bfdbfe; }
+        .severity-low { background: #164e3c; color: #a7f3d0; }
+        .status-resolved { background: #164e3c; color: #a7f3d0; }
+        .status-open { background: #553b20; color: #fde68a; }
+
+        .actions { display: flex; gap: 8px; align-items: center; }
+        .actions .button { padding: 7px 10px; }
+
+        .empty-state {
+            padding: 28px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        footer {
+            padding: 24px 5%;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        @media (max-width: 1000px) {
+            .analytics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 900px) {
+            .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 600px) {
+            main { padding: 24px 4%; }
+            .stats, .analytics-grid { grid-template-columns: 1fr; }
+            .panel { padding: 16px; }
+            .welcome h1 { font-size: 25px; }
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <div class="brand">Code<span>Shield</span></div>
+    <div class="header-label">SDLC Security Incident Dashboard</div>
+</header>
+
+<main>
+    <section class="welcome">
+        <h1>Security Dashboard</h1>
+        <p>Monitor, report, and manage security incidents across the Software Development Life Cycle.</p>
+    </section>
+
+    <section>
+        <h2 class="section-heading">Incident Overview</h2>
+
+        <div class="stats">
+            <div class="stat-card total">
+                <p>Total Incidents</p>
+                <h2>{{ total_incidents }}</h2>
+            </div>
+            <div class="stat-card open">
+                <p>Open Incidents</p>
+                <h2>{{ open_incidents }}</h2>
+            </div>
+            <div class="stat-card critical">
+                <p>Critical Incidents</p>
+                <h2>{{ critical_incidents }}</h2>
+            </div>
+            <div class="stat-card resolved">
+                <p>Resolved Incidents</p>
+                <h2>{{ resolved_incidents }}</h2>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2 class="section-heading">Security Analytics</h2>
+        <p class="panel-description">Visual overview of incidents by severity, status, and SDLC pillar.</p>
+
+        <div class="analytics-grid">
+            <div class="chart-card">
+                <h3>Incidents by Severity</h3>
+                <div class="chart-container">
+                    <canvas id="severityChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3>Incidents by Status</h3>
+                <div class="chart-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3>Incidents by SDLC Pillar</h3>
+                <div class="chart-container">
+                    <canvas id="pillarChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2 class="section-heading">Report a Security Incident</h2>
+        <p class="panel-description">Record a security issue identified during development, testing, deployment, or production.</p>
+
+        <form method="post" class="incident-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="button button-primary">Save Incident</button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2 class="section-heading">Incident Records</h2>
+        <p class="panel-description">View existing incidents, update their details, or remove records.</p>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Incident ID</th>
+                        <th>Title and Description</th>
+                        <th>SDLC Pillar</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Date Reported</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for incident in incidents %}
+                    <tr>
+                        <td>{{ incident.incident_id }}</td>
+                        <td>
+                            <strong>{{ incident.title }}</strong><br>
+                            <span style="color: var(--muted);">
+                                {{ incident.description|default:"No description provided"|truncatechars:100 }}
+                            </span>
+                        </td>
+                        <td>{{ incident.pillar }}</td>
+                        <td>
+                            <span class="badge severity-{{ incident.severity|lower }}">
+                                {{ incident.severity }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge status-{{ incident.status|lower }}">
+                                {{ incident.status }}
+                            </span>
+                        </td>
+                        <td>{{ incident.created_at|date:"d M Y, H:i" }}</td>
+                        <td>
+                            <div class="actions">
+                                <a class="button button-edit"
+                                   href="{% url 'edit_incident' incident.pk %}">Edit</a>
+                                <a class="button button-delete"
+                                   href="{% url 'delete_incident' incident.pk %}">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            No incidents have been recorded yet.
+                            Use the form above to report your first incident.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<footer>CodeShield SDLC Security Dashboard</footer>
+
+{{ severity_labels|json_script:"severity-labels-data" }}
+{{ severity_values|json_script:"severity-values-data" }}
+{{ status_labels|json_script:"status-labels-data" }}
+{{ status_values|json_script:"status-values-data" }}
+{{ pillar_labels|json_script:"pillar-labels-data" }}
+{{ pillar_values|json_script:"pillar-values-data" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const readChartData = (id) =>
+        JSON.parse(document.getElementById(id).textContent);
+
+    const severityLabels = readChartData("severity-labels-data");
+    const severityValues = readChartData("severity-values-data");
+    const statusLabels = readChartData("status-labels-data");
+    const statusValues = readChartData("status-values-data");
+    const pillarLabels = readChartData("pillar-labels-data");
+    const pillarValues = readChartData("pillar-values-data");
+
+    const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                labels: { color: "#edf3fc" }
+            }
+        }
+    };
+
+    const barOptions = {
+        ...commonOptions,
+        scales: {
+            x: {
+                ticks: { color: "#9aabc3" },
+                grid: { color: "#2b3b55" }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: { color: "#9aabc3", precision: 0, stepSize: 1 },
+                grid: { color: "#2b3b55" }
+            }
+        }
+    };
+
+    if (typeof Chart !== "undefined") {
+        new Chart(document.getElementById("severityChart"), {
+            type: "bar",
+            data: {
+                labels: severityLabels,
+                datasets: [{
+                    label: "Incidents",
+                    data: severityValues,
+                    backgroundColor: "#fb7185",
+                    borderRadius: 5
+                }]
+            },
+            options: barOptions
+        });
+
+        new Chart(document.getElementById("statusChart"), {
+            type: "doughnut",
+            data: {
+                labels: statusLabels,
+                datasets: [{
+                    data: statusValues,
+                    backgroundColor: [
+                        "#fbbf24", "#34d399", "#38bdf8",
+                        "#a78bfa", "#fb7185", "#f97316"
+                    ],
+                    borderColor: "#151f32",
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                ...commonOptions,
+                plugins: {
+                    legend: {
+                        position: "bottom",
+                        labels: { color: "#edf3fc", padding: 14 }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById("pillarChart"), {
+            type: "bar",
+            data: {
+                labels: pillarLabels,
+                datasets: [{
+                    label: "Incidents",
+                    data: pillarValues,
+                    backgroundColor: "#38bdf8",
+                    borderRadius: 5
+                }]
+            },
+            options: barOptions
+        });
+    } else {
+        document.querySelectorAll(".chart-container").forEach((container) => {
+            container.textContent =
+                "Charts could not load. Check your internet connection and refresh.";
+        });
+    }
+</script>
+</body>
+</html>

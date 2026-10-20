@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Incident | CodeShield</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 30px 16px;
+            background: #0b1120;
+            color: #edf3fc;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        main {
+            max-width: 650px;
+            margin: 50px auto;
+            padding: 28px;
+            background: #151f32;
+            border: 1px solid #2b3b55;
+            border-radius: 12px;
+        }
+
+        h1 { color: #fb7185; }
+
+        .button {
+            display: inline-block;
+            padding: 11px 16px;
+            border: 0;
+            border-radius: 6px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .delete {
+            background: #fb7185;
+            color: #27101a;
+        }
+
+        .cancel {
+            background: #28486b;
+            color: #dbeafe;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Delete Security Incident</h1>
+
+        <p>
+            Are you sure you want to delete
+            <strong>{{ incident.incident_id }}</strong> —
+            {{ incident.title }}?
+        </p>
+
+        <p>This action cannot be undone.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <button class="button delete" type="submit">
+                Yes, Delete Incident
+            </button>
+
+            <a class="button cancel" href="{% url 'dashboard' %}">
+                Cancel
+            </a>
+        </form>
+    </main>
+</body>
+</html>
