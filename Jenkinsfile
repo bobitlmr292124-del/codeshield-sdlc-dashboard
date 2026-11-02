@@ -13,19 +13,19 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                bat 'python -m pip install -r requirements.txt'
+                bat '"C:\\Users\\Sarah\'s\\AppData\\Local\\Programs\\Python\\Python314\\python.exe" -m pip install -r requirements.txt'
             }
         }
 
         stage('Django System Check') {
             steps {
-                bat 'python manage.py check'
+                bat '"C:\\Users\\Sarah\'s\\AppData\\Local\\Programs\\Python\\Python314\\python.exe" manage.py check'
             }
         }
 
         stage('Run Unit Tests') {
             steps {
-                bat 'python manage.py test'
+                bat '"C:\\Users\\Sarah\'s\\AppData\\Local\\Programs\\Python\\Python314\\python.exe" manage.py test'
             }
         }
     }
