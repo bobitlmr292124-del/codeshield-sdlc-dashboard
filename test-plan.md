@@ -56,7 +56,8 @@ Open is 1 because only CS-001 has the status *Open*. CS-002 is *Investigating*. 
 
 **Result:** ✅ Pass
 
-![TC-01 dashboard overview](../screenshots/02-dashboard-overview.jpg)
+
+<img width="651" height="596" alt="WhatsApp Image 2026-10-20 at 13 33 24" src="https://github.com/user-attachments/assets/114418c8-7689-4629-b3b2-eba9eab573c2" />
 
 ---
 
@@ -76,7 +77,8 @@ Open is 1 because only CS-001 has the status *Open*. CS-002 is *Investigating*. 
 
 **Result:** ✅ Pass
 
-![TC-02 incident records](../screenshots/05-incident-records.jpg)
+<img width="902" height="458" alt="WhatsApp Image 2026-10-20 at 13 33 26 (1)" src="https://github.com/user-attachments/assets/73e1c1de-d9c8-45eb-9a33-3a044384ddf8" />
+
 
 ## 6. Results Summary
 
